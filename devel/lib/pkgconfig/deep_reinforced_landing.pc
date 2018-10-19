@@ -1,0 +1,8 @@
+prefix=/home/gavin/catkin_ws/devel
+
+Name: deep_reinforced_landing
+Description: Description of deep_reinforced_landing
+Version: 1.0.0
+Cflags: -I/home/gavin/catkin_ws/devel/include -I/home/gavin/catkin_ws/src/qlab/deep_reinforced_landing/include
+Libs: -L/home/gavin/catkin_ws/devel/lib -lboundingBox -lutilities
+Requires: message_runtime roscpp rospy geometry_msgs sensor_msgs std_msgs gazebo_msgs ardrone_autonomy

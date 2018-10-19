@@ -1,0 +1,8 @@
+prefix=/home/gavin/catkin_ws/install
+
+Name: tutorials_tf2
+Description: Description of tutorials_tf2
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/gavin/catkin_ws/install/lib 
+Requires: 

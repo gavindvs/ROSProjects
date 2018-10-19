@@ -1,0 +1,8 @@
+prefix=/home/gavin/catkin_ws/devel
+
+Name: qlab_description
+Description: Description of qlab_description
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/gavin/catkin_ws/devel/lib 
+Requires: 

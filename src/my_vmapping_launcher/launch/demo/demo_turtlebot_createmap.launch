@@ -1,0 +1,10 @@
+<launch>
+	<group> 
+		<env name="TURTLEBOT_GAZEBO_WORLD_FILE" value="~/catkin_ws/src/my_worlds/worlds/room.world"/> 
+		<include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch"/>
+		<include file="$(find my_vmapping_launcher)/launch/demo/demo_turtlebot_mapping.launch" pass_all_args="true">
+			<arg name="simulation" value="true"/>
+		</include>
+		<include file="$(find my_vmapping_launcher)/launch/demo/demo_turtlebot_rviz.launch"/>
+	</group>
+</launch>

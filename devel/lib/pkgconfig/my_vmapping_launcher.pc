@@ -1,0 +1,8 @@
+prefix=/home/gavin/catkin_ws/devel
+
+Name: my_vmapping_launcher
+Description: Description of my_vmapping_launcher
+Version: 0.17.0
+Cflags: 
+Libs: -L/home/gavin/catkin_ws/devel/lib 
+Requires: 

@@ -1,0 +1,268 @@
+diff --git a/nav2d/package.xml b/nav2d/package.xml
+index 5421c50..343c60b 100644
+--- a/nav2d/package.xml
++++ b/nav2d/package.xml
+@@ -13,7 +13,7 @@
+ 
+   <buildtool_depend>catkin</buildtool_depend>
+ 
+-  <run_depend>nav2d_msgs</run_depend>
++  <run_depend>some_silly_name</run_depend>
+   <run_depend>nav2d_tutorials</run_depend>
+   <run_depend>nav2d_operator</run_depend>
+   <run_depend>nav2d_navigator</run_depend>
+diff --git a/nav2d_karto/CMakeLists.txt b/nav2d_karto/CMakeLists.txt
+index 21cb263..3da73b7 100644
+--- a/nav2d_karto/CMakeLists.txt
++++ b/nav2d_karto/CMakeLists.txt
+@@ -10,7 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
+   nav_msgs
+   geometry_msgs
+   visualization_msgs
+-  nav2d_msgs
++  some_silly_name
+   nav2d_localizer
+ )
+ 
+@@ -37,7 +37,7 @@ endif(CHOLMOD_FOUND)
+ catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES OpenKarto MultiMapper
+- CATKIN_DEPENDS roscpp tf nav_msgs geometry_msgs visualization_msgs nav2d_msgs nav2d_localizer 
++ CATKIN_DEPENDS roscpp tf nav_msgs geometry_msgs visualization_msgs some_silly_name nav2d_localizer 
+  DEPENDS Eigen3
+ )
+ 
+diff --git a/nav2d_karto/include/nav2d_karto/MultiMapper.h b/nav2d_karto/include/nav2d_karto/MultiMapper.h
+index 9ff4a5d..d6eb5f1 100644
+--- a/nav2d_karto/include/nav2d_karto/MultiMapper.h
++++ b/nav2d_karto/include/nav2d_karto/MultiMapper.h
+@@ -8,7 +8,7 @@
+ #include <nav_msgs/GetMap.h>
+ #include <geometry_msgs/PoseArray.h>
+ #include <geometry_msgs/PoseWithCovarianceStamped.h>
+-#include <nav2d_msgs/LocalizedScan.h>
++#include <some_silly_name/LocalizedScan.h>
+ #include <nav2d_localizer/SelfLocalizer.h>
+ 
+ #include <OpenKarto/OpenKarto.h>
+@@ -29,7 +29,7 @@ public:
+ 
+ 	// Public methods
+ 	void receiveLaserScan(const sensor_msgs::LaserScan::ConstPtr& scan);
+-	void receiveLocalizedScan(const nav2d_msgs::LocalizedScan::ConstPtr& scan);
++	void receiveLocalizedScan(const some_silly_name::LocalizedScan::ConstPtr& scan);
+ 	void receiveInitialPose(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& pose);
+ 	void sendLocalizedScan(const sensor_msgs::LaserScan::ConstPtr& scan, const karto::Pose2& pose);
+ 	void onMessage(const void* sender, karto::MapperEventArguments& args);
+diff --git a/nav2d_karto/package.xml b/nav2d_karto/package.xml
+index f746f2f..a447c4d 100644
+--- a/nav2d_karto/package.xml
++++ b/nav2d_karto/package.xml
+@@ -20,7 +20,7 @@
+   <build_depend>nav_msgs</build_depend>
+   <build_depend>geometry_msgs</build_depend>
+   <build_depend>visualization_msgs</build_depend>
+-  <build_depend>nav2d_msgs</build_depend>
++  <build_depend>some_silly_name</build_depend>
+   <build_depend>nav2d_localizer</build_depend>
+   <build_depend>eigen</build_depend>
+   <build_depend>tbb</build_depend>
+@@ -31,7 +31,7 @@
+   <run_depend>nav_msgs</run_depend>
+   <run_depend>geometry_msgs</run_depend>
+   <run_depend>visualization_msgs</run_depend>
+-  <run_depend>nav2d_msgs</run_depend>
++  <run_depend>some_silly_name</run_depend>
+   <run_depend>nav2d_localizer</run_depend>
+   <run_depend>eigen</run_depend>
+   <run_depend>tbb</run_depend>
+diff --git a/nav2d_karto/src/MultiMapper.cpp b/nav2d_karto/src/MultiMapper.cpp
+index 0c0b891..dbc1c8b 100644
+--- a/nav2d_karto/src/MultiMapper.cpp
++++ b/nav2d_karto/src/MultiMapper.cpp
+@@ -1,5 +1,5 @@
+ #include <visualization_msgs/Marker.h>
+-#include <nav2d_msgs/RobotPose.h>
++#include <some_silly_name/RobotPose.h>
+ #include <nav2d_karto/MultiMapper.h>
+ 
+ // compute linear index for given map coords
+@@ -39,12 +39,12 @@ MultiMapper::MultiMapper()
+ 
+ 	// Initialize Publisher/Subscribers
+ 	mScanSubscriber = robotNode.subscribe(mScanInputTopic, 100, &MultiMapper::receiveLocalizedScan, this);
+-	mScanPublisher = robotNode.advertise<nav2d_msgs::LocalizedScan>(mScanOutputTopic, 100, true);
++	mScanPublisher = robotNode.advertise<some_silly_name::LocalizedScan>(mScanOutputTopic, 100, true);
+ 	mMapServer = robotNode.advertiseService(mMapService, &MultiMapper::getMap, this);
+ 	mMapPublisher = robotNode.advertise<nav_msgs::OccupancyGrid>(mMapTopic, 1, true);
+ 	mLaserSubscriber = robotNode.subscribe(mLaserTopic, 100, &MultiMapper::receiveLaserScan, this);
+ 	mInitialPoseSubscriber = robotNode.subscribe("initialpose", 1, &MultiMapper::receiveInitialPose, this);
+-	mOtherRobotsPublisher = robotNode.advertise<nav2d_msgs::RobotPose>("others", 10, true);
++	mOtherRobotsPublisher = robotNode.advertise<some_silly_name::RobotPose>("others", 10, true);
+ 
+ 	mVerticesPublisher = mapperNode.advertise<visualization_msgs::Marker>("vertices", 1, true);
+ 	mEdgesPublisher = mapperNode.advertise<visualization_msgs::Marker>("edges", 1, true);
+@@ -376,7 +376,7 @@ void MultiMapper::receiveLaserScan(const sensor_msgs::LaserScan::ConstPtr& scan)
+ 			sendLocalizedScan(scan, laserScan->GetOdometricPose());
+ 			
+ 			// Publish via extra topic
+-			nav2d_msgs::RobotPose other;
++			some_silly_name::RobotPose other;
+ 			other.header.stamp = ros::Time::now();
+ 			other.header.frame_id = mMapFrame;
+ 			other.robot_id = mRobotID;
+@@ -541,7 +541,7 @@ bool MultiMapper::updateMap()
+ 	return true;
+ }
+ 
+-void MultiMapper::receiveLocalizedScan(const nav2d_msgs::LocalizedScan::ConstPtr& scan)
++void MultiMapper::receiveLocalizedScan(const some_silly_name::LocalizedScan::ConstPtr& scan)
+ {
+ 	// Ignore my own scans
+ 	if(scan->robot_id == mRobotID) return;
+@@ -598,7 +598,7 @@ void MultiMapper::receiveLocalizedScan(const nav2d_msgs::LocalizedScan::ConstPtr
+ 		ROS_DEBUG("Robot %d: Received scan (uniqueID: %d, Sensor: %s, stateID: %d)", mRobotID, localizedScan->GetUniqueId(), localizedScan->GetSensorIdentifier().ToString().ToCString(), localizedScan->GetStateId());
+ 		
+ 		// Publish via extra topic
+-		nav2d_msgs::RobotPose other;
++		some_silly_name::RobotPose other;
+ 		other.header.stamp = ros::Time::now();
+ 		other.header.frame_id = mMapFrame;
+ 		other.robot_id = scan->robot_id;
+@@ -635,7 +635,7 @@ void MultiMapper::receiveLocalizedScan(const nav2d_msgs::LocalizedScan::ConstPtr
+ 
+ void MultiMapper::sendLocalizedScan(const sensor_msgs::LaserScan::ConstPtr& scan, const karto::Pose2& pose)
+ {
+-	nav2d_msgs::LocalizedScan rosScan;
++	some_silly_name::LocalizedScan rosScan;
+ 	rosScan.robot_id = mRobotID;
+ 	rosScan.laser_type = 0;
+ 	rosScan.x = pose.GetX();
+diff --git a/nav2d_navigator/CMakeLists.txt b/nav2d_navigator/CMakeLists.txt
+index 7832880..f312d23 100644
+--- a/nav2d_navigator/CMakeLists.txt
++++ b/nav2d_navigator/CMakeLists.txt
+@@ -11,7 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
+   actionlib_msgs
+   geometry_msgs
+   nav2d_operator
+-  nav2d_msgs
++  some_silly_name
+ )
+ 
+ ################################################
+@@ -48,7 +48,7 @@ catkin_package(
+     actionlib
+     actionlib_msgs
+     geometry_msgs
+-    nav2d_msgs
++    some_silly_name
+     nav2d_operator
+ )
+ 
+diff --git a/nav2d_navigator/include/nav2d_navigator/ExplorationPlanner.h b/nav2d_navigator/include/nav2d_navigator/ExplorationPlanner.h
+index 5434dcf..e36590c 100644
+--- a/nav2d_navigator/include/nav2d_navigator/ExplorationPlanner.h
++++ b/nav2d_navigator/include/nav2d_navigator/ExplorationPlanner.h
+@@ -8,7 +8,7 @@
+ 
+ #include <string>
+ #include <tf/transform_listener.h>
+-#include <nav2d_msgs/RobotPose.h>
++#include <some_silly_name/RobotPose.h>
+ 
+ #include <nav2d_navigator/GridMap.h>
+ 
+@@ -24,7 +24,7 @@ public:
+ 		mOtherRobotsSubscriber = robotNode.subscribe("others", 10, &RobotList::receiveOtherPose, this);
+ 	}
+ 	
+-	void receiveOtherPose(const nav2d_msgs::RobotPose::ConstPtr& msg)
++	void receiveOtherPose(const some_silly_name::RobotPose::ConstPtr& msg)
+ 	{
+ 		mOtherRobots[msg->robot_id] = msg->pose;
+ 	}
+diff --git a/nav2d_navigator/package.xml b/nav2d_navigator/package.xml
+index 0e56ce1..a459c1f 100644
+--- a/nav2d_navigator/package.xml
++++ b/nav2d_navigator/package.xml
+@@ -25,7 +25,7 @@
+   <build_depend>actionlib_msgs</build_depend>
+   <build_depend>geometry_msgs</build_depend>
+   <build_depend>std_srvs</build_depend>
+-  <build_depend>nav2d_msgs</build_depend>
++  <build_depend>some_silly_name</build_depend>
+   <build_depend>nav2d_operator</build_depend>
+ 
+   <run_depend>roscpp</run_depend>
+@@ -36,7 +36,7 @@
+   <run_depend>actionlib_msgs</run_depend>
+   <run_depend>geometry_msgs</run_depend>
+   <run_depend>std_srvs</run_depend>
+-  <run_depend>nav2d_msgs</run_depend>
++  <run_depend>some_silly_name</run_depend>
+   <run_depend>nav2d_operator</run_depend>
+ 
+ </package>
+diff --git a/nav2d_tutorials/package.xml b/nav2d_tutorials/package.xml
+index 0860a5d..0fbda64 100644
+--- a/nav2d_tutorials/package.xml
++++ b/nav2d_tutorials/package.xml
+@@ -13,7 +13,7 @@
+ 
+   <buildtool_depend>catkin</buildtool_depend>
+ 
+-  <run_depend>nav2d_msgs</run_depend>
++  <run_depend>some_silly_name</run_depend>
+   <run_depend>nav2d_operator</run_depend>
+   <run_depend>nav2d_navigator</run_depend>
+   <run_depend>nav2d_localizer</run_depend>
+diff --git a/nav2d_msgs/CMakeLists.txt b/some_silly_name/CMakeLists.txt
+similarity index 98%
+rename from nav2d_msgs/CMakeLists.txt
+rename to some_silly_name/CMakeLists.txt
+index 15899b1..9b000fc 100644
+--- a/nav2d_msgs/CMakeLists.txt
++++ b/some_silly_name/CMakeLists.txt
+@@ -1,5 +1,5 @@
+ cmake_minimum_required(VERSION 2.8.3)
+-project(nav2d_msgs)
++project(some_silly_name)
+ 
+ ## Find catkin macros and libraries
+ find_package(catkin REQUIRED COMPONENTS
+diff --git a/nav2d_msgs/msg/LocalizedScan.msg b/some_silly_name/msg/LocalizedScan.msg
+similarity index 100%
+rename from nav2d_msgs/msg/LocalizedScan.msg
+rename to some_silly_name/msg/LocalizedScan.msg
+diff --git a/nav2d_msgs/msg/RobotPose.msg b/some_silly_name/msg/RobotPose.msg
+similarity index 100%
+rename from nav2d_msgs/msg/RobotPose.msg
+rename to some_silly_name/msg/RobotPose.msg
+diff --git a/nav2d_msgs/nav2d_msgs.project b/some_silly_name/nav2d_msgs.project
+similarity index 100%
+rename from nav2d_msgs/nav2d_msgs.project
+rename to some_silly_name/nav2d_msgs.project
+diff --git a/nav2d_msgs/package.xml b/some_silly_name/package.xml
+similarity index 88%
+rename from nav2d_msgs/package.xml
+rename to some_silly_name/package.xml
+index eebdea5..a2b6d53 100644
+--- a/nav2d_msgs/package.xml
++++ b/some_silly_name/package.xml
+@@ -1,12 +1,12 @@
+ <?xml version="1.0"?>
+ <package>
+ 
+-  <name>nav2d_msgs</name>
++  <name>some_silly_name</name>
+   <version>0.4.0</version>
+   <description>Messages used for 2D-Navigation.</description>
+   <maintainer email="sebastian.kasperski@dfki.de">Sebastian Kasperski</maintainer>
+   <license>GPLv3</license>
+-  <url type="website">http://wiki.ros.org/nav2d_msgs</url>
++  <url type="website">http://wiki.ros.org/some_silly_name</url>
+   <author email="sebastian.kasperski@dfki.de">Sebastian Kasperski</author>
+ 
+   <buildtool_depend>catkin</buildtool_depend>

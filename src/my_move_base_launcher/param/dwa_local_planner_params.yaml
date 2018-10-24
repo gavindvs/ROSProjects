@@ -3,7 +3,7 @@ DWAPlannerROS:
   use_dwa: false
   holonomic_robot: false
 # Robot Configuration Parameters - Kobuki
-  max_vel_x: 0.2 
+  max_vel_x: 0.2  # low forward speed movement was selected to better negotiate high obstacle environments
   min_vel_x: 0.0 
 
   max_vel_y: 0.2  # diff drive robot
@@ -17,14 +17,15 @@ DWAPlannerROS:
   #   do not set min_trans_vel to 0.0 otherwise dwa will always think translational velocities
   #   are non-negligible and small in place rotational velocities will be created.
 
-  max_rot_vel: 8.0  # choose slightly less than the base's capability 5.0
+  max_rot_vel: 8.0  # a high maximum rotation velocity was chosen to allow the robot to follow the planned
+		    # path with precision and speed
   min_rot_vel: 0.1  # this is the min angular velocity when there is negligible translational velocity
   rot_stopped_vel: 0.01
   
   acc_lim_x: 0.1 # maximum is theoretically 2.0
   acc_lim_y: 0.1      # diff drive robot 
   acc_lim_theta: 7.7
-  acc_lim_trans: 7.7
+  acc_lim_trans: 7.7 # a high maximum acceleration limit for rotation was chosen to complement the high maximum rotation velocity
 
 # Goal Tolerance Parameters
   yaw_goal_tolerance: 0.05
@@ -32,24 +33,29 @@ DWAPlannerROS:
   # latch_xy_goal_tolerance: false
 
 # Forward Simulation Parameters
-  sim_time: 2.0
-  sim_granularity: 0.035
+  sim_time: 2.0 # higher than default sim_time was selected to allow the robot to estimate forward trejectory movements with greater accuracy
+  sim_granularity: 0.035 # accompanying the increase in in forward trejectory simulation, step size between points was thus increased
   angular_sim_granularity: 0.25
-  vx_samples: 6       # 3
+  vx_samples: 6       # sample size for vx_samples and vy_samples were increased to improve trejectory simulation in a high obstacle environment
   vy_samples: 6       # diff drive robot, there is only one sample
-  vtheta_samples: 20  # 20
+  vtheta_samples: 20  # kept to the default value of 20
 
 # Trajectory Scoring Parameters
-  path_distance_bias: 100.0      # 32.0   - weighting for how much it should stick to the global path plan
-  goal_distance_bias: 70.0    # 24.0   - wighting for how much it should attempt to reach its goal
-  occdist_scale: 250.0            # 0.01   - weighting for how much the controller should avoid obstacles
-  forward_point_distance: 0.325 # 0.325  - how far along to place an additional scoring point
-  stop_time_buffer: 0.2         # 0.2    - amount of time a robot must stop in before colliding for a valid traj.
-  scaling_speed: 0.25           # 0.25   - absolute velocity at which to start scaling the robot's footprint
-  max_scaling_factor: 0.2       # 0.2    - how much to scale the robot's footprint when at speed.
+  path_distance_bias: 100.0      # weighting for how much it should stick to the global path plan. 
+				 # set to a high value to ensure the robot follows the global path plan as much as possible
+  goal_distance_bias: 70.0    	 # weighting for how much it should attempt to reach its goal. 
+				 # goal_distance_bias was increased to 3/4 of path_distance_bias value, to ensure the robot goes towards
+				 # the goal pose as efficently as possible
+  occdist_scale: 250.0           # weighting for how much the controller should avoid obstacles
+				 # set to x2.5 of path_distance_bias to ensure the robot avoids and keeps a buffer distance from obstacles.
+				 # especially important as the robot is in a high obstacle environment
+  forward_point_distance: 0.325 # how far along to place an additional scoring point
+  stop_time_buffer: 0.2         # amount of time a robot must stop in before colliding for a valid traj.
+  scaling_speed: 0.25           # absolute velocity at which to start scaling the robot's footprint
+  max_scaling_factor: 0.2       # how much to scale the robot's footprint when at speed.
 
 # Oscillation Prevention Parameters
-  oscillation_reset_dist: 0.05  # 0.05   - how far to travel before resetting oscillation flags
+  oscillation_reset_dist: 0.05  # how far to travel before resetting oscillation flags
   oscillation_reset_angle: 0.2
 
 # Debugging

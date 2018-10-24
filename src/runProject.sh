@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo This script initializes the Gazebo the world file, 
+echo This script initializes the Gazebo world file, 
 echo launches Gazebo and spawns the turtlebot
 echo After which it launches the move base module, rviz and rqt
 echo WARNING: Please initialize the environment variables: 

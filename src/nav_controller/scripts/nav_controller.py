@@ -2,7 +2,7 @@
 import rospy
 import actionlib
 from actionlib_msgs.msg import *
-from geometry_msgs.msg import Pose, PoseWithCovarianceStamped, Point, Quaternion, Twist
+from geometry_msgs.msg import Pose, PoseWithCovarianceStamped, Point, Quaternion
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 
 class NavController():
@@ -26,9 +26,6 @@ class NavController():
 	map_locations={1:'fridge', 2:'oven', 3:'bar', 4:'side_table', 5:'sofa', 6:'coffee_table'}
 
 	location = ""	
-	
-	#cmd_vel_pub is defined to stop the robot's movement on the shutdown of the nav_controller
-        self.cmd_vel_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
         
         #Subscribe to the move_base action server
         self.move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)
@@ -85,8 +82,6 @@ class NavController():
         rospy.loginfo("Stopping the robot...")
         self.move_base.cancel_goal()
         rospy.sleep(2)
-        self.cmd_vel_pub.publish(Twist())
-        rospy.sleep(1)
 
 if __name__ == '__main__':
     try:

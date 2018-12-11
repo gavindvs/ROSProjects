@@ -1,0 +1,8 @@
+prefix=/home/gavin/catkin_ws/devel
+
+Name: abb_irb120_support
+Description: Description of abb_irb120_support
+Version: 0.1.0
+Cflags: 
+Libs: -L/home/gavin/catkin_ws/devel/lib 
+Requires: 
